@@ -1,0 +1,262 @@
+ 
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <title>StyleNest - Fashion Store</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+ 
+    <style> 
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        } 
+ 
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f8f5f2; 
+        } 
+ 
+        header { 
+            background: #222; 
+            color: white; 
+            text-align: center; 
+            padding: 20px; 
+        } 
+ 
+        header h1 { 
+            color: #f4b183; 
+        } 
+ 
+        nav { 
+            background: #333; 
+        } 
+ 
+        nav ul { 
+            display: flex; 
+            justify-content: center; 
+            list-style: none; 
+        } 
+ 
+        nav a { 
+            display: block; 
+            color: white; 
+            padding: 15px 25px; 
+            text-decoration: none; 
+        } 
+ 
+        nav a:hover { 
+            background: #f4b183; 
+            color: black; 
+        } 
+ 
+        .container { 
+            max-width: 500px; 
+            margin: 30px auto; 
+            padding: 25px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 8px #ccc; 
+        } 
+ 
+        h2 { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            color: #333; 
+        } 
+ 
+        label { 
+            display: block; 
+            margin-top: 15px; 
+            font-weight: bold; 
+        } 
+ 
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            margin-top: 5px; 
+            border: 1px solid #aaa; 
+            border-radius: 5px; 
+        } 
+ 
+        button { 
+            background: #333; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            margin-top: 20px; 
+            cursor: pointer; 
+            border-radius: 5px; 
+        } 
+ 
+        button:hover { 
+            background: #f4b183; 
+            color: black; 
+        } 
+ 
+        #result { 
+            margin-top: 20px; 
+            padding: 10px; 
+            white-space: pre-line; 
+            font-weight: bold; 
+        } 
+ 
+        .product { 
+            margin-top: 15px; 
+            text-align: center; 
+        } 
+ 
+        .product img { 
+            width: 150px; 
+            height: 150px; 
+            object-fit: contain; 
+        } 
+ 
+        footer { 
+            background: #222; 
+            color: white; 
+            text-align: center; 
+            padding: 15px; 
+            margin-top: 30px; 
+        } 
+ 
+        @media(max-width: 600px) { 
+            nav ul { 
+                flex-direction: column; 
+                text-align: center; 
+            } 
+ 
+            .container { 
+                margin: 20px; 
+                padding: 15px; 
+            } 
+        } 
+    </style> 
+</head> 
+ 
+<body> 
+ 
+    <!-- Header --> 
+    <header> 
+        <h1>StyleNest</h1> 
+        <p>Your Style, Your Choice</p> 
+    </header> 
+ 
+    <!-- Navigation --> 
+    <nav> 
+        <ul> 
+            <li><a href="#">Home</a></li> 
+            <li><a href="#">Men</a></li> 
+            <li><a href="#">Women</a></li> 
+            <li><a href="#">Offers</a></li> 
+            <li><a href="#">Contact</a></li> 
+        </ul> 
+    </nav> 
+ 
+    <!-- Product Search --> 
+    <div class="container"> 
+ 
+        <h2>StyleNest Product Details</h2> 
+ 
+        <label for="productID">Enter Product ID:</label> 
+ 
+        <input type="text" id="productId" 
+        placeholder="Enter ID from 1 to 20"> 
+ 
+        <button onclick="getProduct()"> 
+            Search Product 
+        </button> 
+ 
+        <p id="result"></p> 
+ 
+        <div class="product" id="product"></div> 
+ 
+    </div> 
+ 
+    <!-- Footer --> 
+    <footer> 
+        <p>© 2026 StyleNest | Fashion for Everyone</p> 
+    </footer> 
+ 
+    <!-- JavaScript API --> 
+    <script> 
+ 
+        // Fetch Product Details 
+        async function getProduct() { 
+ 
+            let id = document.getElementById("productId").value.trim(); 
+ 
+            let result = document.getElementById("result"); 
+            let product = document.getElementById("product"); 
+ 
+            // Input Validation 
+            if (id === "") { 
+                result.style.color = "red"; 
+                result.textContent = "Please enter Product ID."; 
+                product.innerHTML = ""; 
+            } 
+ 
+            else if (!/^[0-9]+$/.test(id)) { 
+                result.style.color = "red"; 
+                result.textContent = "Product ID must contain only numbers."; 
+                product.innerHTML = ""; 
+            } 
+ 
+            else if (Number(id) < 1 || Number(id) > 20) { 
+                result.style.color = "red"; 
+                result.textContent = "Enter Product ID between 1 and 20."; 
+                product.innerHTML = ""; 
+            } 
+ 
+            else { 
+ 
+                result.style.color = "blue"; 
+                result.textContent = "Loading product details..."; 
+                product.innerHTML = ""; 
+ 
+                try { 
+ 
+                    // API Call using Fetch 
+                    let response = await fetch( 
+                        "https://fakestoreapi.com/products/" + id 
+                    ); 
+ 
+                    // Check API Response 
+                    if (!response.ok) { 
+                        throw new Error("Product not found!"); 
+                    } 
+ 
+                    // Convert Response into JSON 
+                    let data = await response.json(); 
+ 
+                    // Display Product Details 
+                    result.style.color = "green"; 
+                    result.textContent = "Product Details Loaded Successfully!"; 
+ 
+                    product.innerHTML = 
+                        "<h3>" + data.title + "</h3>" + 
+                        "<img src='" + data.image + "' alt='Product image'>" + 
+                        "<p>Price: $" + data.price + "</p>" + 
+                        "<p>Category: " + data.category + "</p>" + 
+                        "<p>Rating: " + data.rating.rate + "</p>"; 
+ 
+                } 
+ 
+                catch (error) { 
+ 
+                    // Error Handling and Debugging 
+                    result.style.color = "red"; 
+                    result.textContent = "Error: " + error.message; 
+ 
+                    product.innerHTML = ""; 
+ 
+                    console.error("API Error:", error); 
+                } 
+            } 
+        } 
+ 
+    </script> 
+ 
+</body> 
+</html> 
